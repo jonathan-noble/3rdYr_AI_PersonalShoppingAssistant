@@ -1,5 +1,5 @@
-%Main
-main :-write('***********************************************'),
+%Start
+start :-write('***********************************************'),
        nl,nl,
        write('*********Welcome to Personal shopping**********'),
        nl,
@@ -7,7 +7,7 @@ main :-write('***********************************************'),
        nl,nl,nl,
        write('***********************************************'),
        nl,
-       write('Hello I am you personal shopping assistant!'),
+       write('Hello I am your personal shopping assistant!'),
        nl,
        write('***********************************************'),
        nl,nl,nl,
@@ -21,28 +21,41 @@ main :-write('***********************************************'),
        %no need listing just type the names write
        listing(aisle),
        nl,
+
+
        write('***********************************************'),
        nl,
-       write('Which aisle are you at the moment?'),
+       write('Which area are you at the moment?'),
        nl,
        write('***********************************************'),
        nl,nl,nl,
 
-       %user input which aisle)
+       print_location,
 
-       start,
+       nl, nl, nl,
+
+       guess,
        %once the product is figured out , it can then be located
        %shortest way to reach that product is provided below
-       %shortest(fruit ,home, Path, Length),
+       %shortest(Current ,Destination, Path, Length),
 
        nl,nl,
        write('***********************************************'),
        nl,
-       write('(Query)Type in: shortest(your current location,your destination,Path,Length)'),
+       write('(Query)Type in: shortest(Your_current_location,Your_Destination,Path,Length)'),
        nl,
        write('to find out the quickest way to go to that product.'),
        nl.
 
+
+/* ask current location */
+
+
+print_location :-
+    read(Current),
+    write(' You are currently in: '),
+    write(Current),
+    write(' section!').
 
 
 
@@ -102,13 +115,10 @@ min([],M,M).
 min([[P,L]|R],[_,M],Min) :- L < M, !, min(R,[P,L],Min).
 min([_|R],M,Min) :- min(R,M,Min).
 
-%guess(Aisle):-
-%
-/* fruitvegetable.pro
- * vegetable or fruit identification game.
- * begin with ?- start. */
 
-start :- figureout(FruitVeg),
+
+guess :- figureout(FruitVeg),
+         findout(Destination),
     /*
     retractall(current_room(_)),
     assertz(current_room(garden)),
@@ -120,17 +130,16 @@ start :- figureout(FruitVeg),
     write(FruitVeg),
     nl,
     write('That product can be found in: '),
-    %write(LocateAisle),
+    write(Destination),
     %3 variables one for a and b (current loc-  destination)
     %that can be found in (variable)
     %put in function predicate shortest
     %category= aisle
-
-
-
     nl,
-
     undo.
+
+
+
 
 /* Facts that will be tested */
 figureout(tomato)       :- tomato, !.
@@ -142,7 +151,10 @@ figureout(cucumber)     :- cucumber, !.
 figureout(squash)       :- squash, !.
 figureout(unknown).             /* no diagnosis */
 
-%findout(fruitaisle)    :- fruitaisle, !.
+/* Facts for the area the objects are located at */
+findout(fruit_area)    :- fruit_area, !.
+findout(veggie_area)    :- veggie_area, !.
+
 
 /* object identification rules */
 tomato      :- fruit,
@@ -160,7 +172,12 @@ cucumber    :- fruit,
              verify(is_green).
 squash      :- fruit,
              verify(is_orange).
-%fruitaisle  :-
+
+
+/* area identification rules */
+fruit_area   :- fruit.
+
+veggie_area  :- vegetable.
 
 
 /* classification rules */
@@ -188,6 +205,7 @@ ask(Question) :-
        assert(no(Question)), fail).
 
 :- dynamic (yes/1,no/1).
+
 
 
 /* verifying something */
