@@ -1,3 +1,8 @@
+%Main
+main :- listing(aisle),
+       %shortest(fruit ,home, Path, Length),
+       start.
+
 %facts
 aisle(fruit).
 aisle(veggies).
@@ -130,13 +135,9 @@ ask(Question) :-
 
 /* verifying something */
 verify(S) :-
-   (yes(S)
-     ->
-     true ;
-     (no(S)
-     ->
-     fail ;
-     ask(S))).
+   (yes(S)-> true ;
+   (no(S) -> fail ;
+    ask(S) )).
 
 
 /*undo all yes/no changes */
