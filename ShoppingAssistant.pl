@@ -1,7 +1,50 @@
 %Main
-main :- listing(aisle),
+main :-write('***********************************************'),
+       nl,nl,
+       write('*********Welcome to Personal shopping**********'),
+       nl,
+       write('***********************************************'),
+       nl,nl,nl,
+       write('***********************************************'),
+       nl,
+       write('Hello I am you personal shopping assistant!'),
+       nl,
+       write('***********************************************'),
+       nl,nl,nl,
+       write('***********************************************'),
+       nl,
+       write('Below are the list of aisle in this grocery.'),
+       nl,
+       write('***********************************************'),
+       nl,nl,nl,
+
+       %no need listing just type the names write
+       listing(aisle),
+       nl,
+       write('***********************************************'),
+       nl,
+       write('Which aisle are you at the moment?'),
+       nl,
+       write('***********************************************'),
+       nl,nl,nl,
+
+       %user input which aisle)
+
+       start,
+       %once the product is figured out , it can then be located
+       %shortest way to reach that product is provided below
        %shortest(fruit ,home, Path, Length),
-       start.
+
+       nl,nl,
+       write('***********************************************'),
+       nl,
+       write('(Query)Type in: shortest(your current location,your destination,Path,Length)'),
+       nl,
+       write('to find out the quickest way to go to that product.'),
+       nl.
+
+
+
 
 %facts
 aisle(fruit).
@@ -73,9 +116,20 @@ start :- figureout(FruitVeg),
     get_input,
     */
 
-    write('My guess is that the object is: '),
+    write('The product you are looking for is: '),
     write(FruitVeg),
     nl,
+    write('That product can be found in: '),
+    %write(LocateAisle),
+    %3 variables one for a and b (current loc-  destination)
+    %that can be found in (variable)
+    %put in function predicate shortest
+    %category= aisle
+
+
+
+    nl,
+
     undo.
 
 /* Facts that will be tested */
@@ -86,7 +140,9 @@ figureout(avocado)      :- avocado, !.
 figureout(cauliflower ) :- cauliflower, !.
 figureout(cucumber)     :- cucumber, !.
 figureout(squash)       :- squash, !.
-figureout(unknown).              /* no diagnosis */
+figureout(unknown).             /* no diagnosis */
+
+%findout(fruitaisle)    :- fruitaisle, !.
 
 /* object identification rules */
 tomato      :- fruit,
@@ -104,13 +160,14 @@ cucumber    :- fruit,
              verify(is_green).
 squash      :- fruit,
              verify(is_orange).
+%fruitaisle  :-
 
 
 /* classification rules */
-fruit      :- verify(is_from_fruit_aisle),!.
+fruit      :- verify(tastes_sweet), !.
 fruit      :- verify(is_from_tree), !.
 fruit      :- verify(has_seed), !.
-fruit      :- verify(tastes_sweet), !.
+
 
 vegetable  :- verify(is_from_ground), !.
 vegetable  :- verify(is_leafy), !.
