@@ -1,86 +1,88 @@
 %Start
-start :-write('***********************************************'),
+start :-
+       write('***********************************************'),
        nl,nl,
-       write('*********Welcome to Personal shopping**********'),
-       nl,
-       write('***********************************************'),
+       write('*********Welcome to AI Personal Shopping! **********'),
        nl,nl,nl,
        write('***********************************************'),
        nl,
-       write('Hello I am your personal shopping assistant!'),
-       nl,
-       write('***********************************************'),
+       write('Can I get your name please? '),
+       read(Name),
        nl,nl,nl,
        write('***********************************************'),
        nl,
-       write('Below are the list of aisle in this grocery.'),
+       format("Hello ~q! I will be your personal shopping assistant for today.",         Name),
+       nl,
+       write('***********************************************'),
+       nl,nl,nl,
+       shop.
+
+
+shop :-
+       write('***********************************************'),
+       nl,
+       write('Below are the list of areas in this grocery.'),
        nl,
        write('***********************************************'),
        nl,nl,nl,
 
        %no need listing just type the names write
-       listing(aisle),
+       listing(area),
        nl,
-
-
        write('***********************************************'),
        nl,
        write('Which area are you at the moment?'),
        nl,
        write('***********************************************'),
-       nl,nl,nl,
-
+       nl,
        print_location(Current),
-
        nl, nl, nl,
 
-       guess(Grocery),
+       guess(Destination),
        %once the product is figured out , it can then be located
+       nl,
+
+       shortest(Current, Destination, Path, Length),
+       write('Here is the shortest path you can take: '),
+       write(Path),
+       nl,
+       write('Length: '),
+       write(Length),
 
        nl,nl,
        write('***********************************************'),
        nl,
-       write('What is your next destination: '),
-       read(Destination),
-       shortest(Current ,Destination, Path, Length),
+       write('Need anything else? Type \'shop.\' for more! '),
        nl,
-       %write('to find out the quickest way to go to that product.'),
-       write(Path),
+       write('Otherwise, type \'exit.\' to shut me off'),
        nl,
-       write(Length),
-       /*
-        * loop the menu to go back and
-        * exit the program when user inputs 'exit'
-        */
+       write('***********************************************').
 
 
-       nl.
+exit:- write('Goodbye! See you later!'), abort.
 
 
 /* ask current location */
 print_location(Current) :-
     read(Current),
-    write(' You are currently in: '),
+    write('You are currently in: '),
     write(Current),
     write(' section!').
 
-%:- dynamic current_room/1.
-
-
 %facts
-aisle(fruit).
-aisle(veggies).
-aisle(butcher).
-aisle(cosmetic).
-aisle(pet).
-aisle(home).
-aisle(clothes).
-aisle(cleaning).
-aisle(sale).
+area(fruities).
+area(veggies).
+area(butcher).
+area(cosmetic).
+area(pet).
+area(home).
+area(clothes).
+area(cleaning).
+area(sale).
 
 
-isconnectedto(fruit,veggies,1).
-isconnectedto(fruit,butcher,3.5).
+isconnectedto(fruities,veggies,1).
+isconnectedto(fruities,butcher,3.5).
 isconnectedto(veggies,cosmetic,2.5).
 isconnectedto(veggies,pet,1).
 isconnectedto(butcher,home,2.2).
@@ -89,9 +91,6 @@ isconnectedto(cosmetic,pet,4).
 isconnectedto(pet,clothes,2.5).
 isconnectedto(clothes,cleaning,2).
 isconnectedto(cleaning,sale,1).
-
-
-%rules
 
 
 %state search
@@ -125,28 +124,16 @@ min([_|R],M,Min) :- min(R,M,Min).
 
 
 
-guess(Grocery) :- figureout(FruitVeg),
-         findout(Grocery),
-    /*
-    retractall(current_room(_)),
-    assertz(current_room(garden)),
-    print_location,
-    get_input,
-    */
+guess(Destination) :- figureout(Grocery),
+         findout(Destination),
 
     write('The product you are looking for may be: '),
-    write(FruitVeg),
+    write(Grocery),
     nl,
     write('That product can be found in: '),
-    write(Grocery),
-    %3 variables one for a and b (current loc-  destination)
-    %that can be found in (variable)
-    %put in function predicate shortest
-    %category= aisle
+    write(Destination),
     nl,
     undo.
-
-
 
 
 /* Facts that will be tested */
@@ -154,14 +141,33 @@ figureout(tomato)       :- tomato, !.
 figureout(broccoli)     :- broccoli, !.
 figureout(potato)       :- potato, !.
 figureout(avocado)      :- avocado, !.
-figureout(cauliflower ) :- cauliflower, !.
+figureout(cauliflower)  :- cauliflower, !.
 figureout(cucumber)     :- cucumber, !.
 figureout(squash)       :- squash, !.
+
+
+figureout(beef)         :- beef, !.
+figureout(crab)         :- crab, !.
+figureout(turkey)       :- turkey, !.
+
+figureout(toys)         :- toys, !.
+figureout(leash)        :- leash, !.
+figureout(treats)       :- treats, !.
+
+figureout(soap)         :- soap,  !.
+figureout(spray)        :- spray, !.
+figureout(tools)        :- tools, !.
+
 figureout(unknown).             /* no diagnosis */
 
 /* Facts for the area the objects are located at */
-findout(fruit_area)    :- fruit_area, !.
-findout(veggie_area)    :- veggie_area, !.
+findout(fruities)    :- fruities, !.
+findout(veggies)   :- veggies, !.
+
+findout(butcher)  :- butcher, !.
+findout(pet)      :- pet, !.
+findout(cleaning) :- cleaning, !.
+
 
 
 /* object identification rules */
@@ -181,11 +187,39 @@ cucumber    :- fruit,
 squash      :- fruit,
              verify(is_orange).
 
+beef        :- meat,
+               verify(is_put_on_burgers).
+crab        :- meat,
+               verify(is_seafood).
+turkey      :- meat,
+               verify(is_served_on_thanksgiving).
+
+toys        :- pet,
+               verify(is_for_entertainment).
+leash       :- pet,
+               verify(is_for_walking).
+treats      :- pet,
+               verify(is_for_snacks).
+
+soap        :- cleaning,
+               verify(is_for_handwash).
+spray       :- cleaning,
+               verify(is_for_kitchen),
+               verify(is_for_toilet).
+tools       :- cleaning,
+               verify(is_for_mopping),
+               verify(is_for_dusting).
+
+
+
 
 /* area identification rules */
-fruit_area   :- fruit.
+fruities  :- fruit.
+veggies   :- vegetable.
 
-veggie_area  :- vegetable.
+butcher  :- meat.
+pet      :- petmalu.
+cleaning :- sanitary .
 
 
 /* classification rules */
@@ -193,10 +227,18 @@ fruit      :- verify(tastes_sweet), !.
 fruit      :- verify(is_from_tree), !.
 fruit      :- verify(has_seed), !.
 
-
 vegetable  :- verify(is_from_ground), !.
 vegetable  :- verify(is_leafy), !.
 vegetable  :- verify(tastes_bland), !.
+
+
+meat       :- verify(is_chunky), !.
+meat       :- verify(has_bone), !.
+meat       :- verify(has_high_protein), !.
+
+petmalu    :- verify(is_used_by_pets), !.
+
+sanitary   :- verify(is_for_house), !.
 
 
 /* how to ask questions */
