@@ -52,15 +52,21 @@ shop :-
        nl,nl,
        write('***********************************************'),
        nl,
-       write('Need anything else? Type \'shop.\' for more! '),
+       write('Need anything else? Type \'yes.\' to shop more! '),
        nl,
-       write('Otherwise, type \'exit.\' to shut me off'),
+       write('Otherwise, type \'no.\' to shut me off.'),
        nl,
-       write('***********************************************').
+       write('***********************************************'),
+       nl,
+       read(Response),
+       nl,
+      ( (Response == yes ; Response == y )
+      -> shop ;
+       ( Response == no ; Response == n)
+      ->  exit),
+      nl.
 
-
-exit:- write('Goodbye! See you later!'), abort.
-
+exit :- write('Goodbye! See you again soon.').
 
 /* ask current location */
 print_location(Current) :-
@@ -161,8 +167,8 @@ figureout(tools)        :- tools, !.
 figureout(unknown).             /* no diagnosis */
 
 /* Facts for the area the objects are located at */
-findout(fruities)    :- fruities, !.
-findout(veggies)   :- veggies, !.
+findout(fruities) :- fruities, !.
+findout(veggies)  :- veggies, !.
 
 findout(butcher)  :- butcher, !.
 findout(pet)      :- pet, !.
@@ -211,8 +217,6 @@ tools       :- cleaning,
                verify(is_for_dusting).
 
 
-
-
 /* area identification rules */
 fruities  :- fruit.
 veggies   :- vegetable.
@@ -250,13 +254,10 @@ ask(Question) :-
     read(Response),
     nl,
     ( (Response == yes ; Response == y)
-      ->
-       assert(yes(Question)) ;
-       assert(no(Question)), fail).
+      -> assert(yes(Question)) ;
+         assert(no(Question)), fail).
 
 :- dynamic (yes/1,no/1).
-
-
 
 /* verifying something */
 verify(S) :-
