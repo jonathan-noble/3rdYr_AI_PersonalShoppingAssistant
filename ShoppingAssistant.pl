@@ -30,14 +30,12 @@ start :-write('***********************************************'),
        write('***********************************************'),
        nl,nl,nl,
 
-       print_location,
+       print_location(Current),
 
        nl, nl, nl,
 
-       guess,
+       guess(Destination),
        %once the product is figured out , it can then be located
-       %shortest way to reach that product is provided below
-       %shortest(Current ,Destination, Path, Length),
 
        nl,nl,
        write('***********************************************'),
@@ -45,18 +43,29 @@ start :-write('***********************************************'),
        write('(Query)Type in: shortest(Your_current_location,Your_Destination,Path,Length)'),
        nl,
        write('to find out the quickest way to go to that product.'),
-       nl.
+       nl,
+       %shortest way to reach that product is provided below
+       connected(X,Y,L),
+       path(A,B,Path,Length),
+       travel(A,B,P,[B|P],L),
+       travel(A,B,Visited,Path,L),
+       minimal([F|R],M),
+       min([],M,M),
+       min([[P,L]|R],[_,M],Min),
+       min([_|R],M,Min),
+       shortest(Current ,Destination, Path, Length).
+
+
 
 
 /* ask current location */
-
-
-print_location :-
+print_location(Current) :-
     read(Current),
     write(' You are currently in: '),
     write(Current),
     write(' section!').
 
+%:- dynamic current_room/1.
 
 
 %facts
@@ -117,7 +126,7 @@ min([_|R],M,Min) :- min(R,M,Min).
 
 
 
-guess :- figureout(FruitVeg),
+guess(Destination) :- figureout(FruitVeg),
          findout(Destination),
     /*
     retractall(current_room(_)),
