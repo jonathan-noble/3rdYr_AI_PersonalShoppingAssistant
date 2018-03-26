@@ -34,28 +34,27 @@ start :-write('***********************************************'),
 
        nl, nl, nl,
 
-       guess(Destination),
+       guess(Grocery),
        %once the product is figured out , it can then be located
 
        nl,nl,
        write('***********************************************'),
        nl,
-       write('(Query)Type in: shortest(Your_current_location,Your_Destination,Path,Length)'),
+       write('What is your next destination: '),
+       read(Destination),
+       shortest(Current ,Destination, Path, Length),
        nl,
-       write('to find out the quickest way to go to that product.'),
+       %write('to find out the quickest way to go to that product.'),
+       write(Path),
        nl,
-       %shortest way to reach that product is provided below
-       connected(X,Y,L),
-       path(A,B,Path,Length),
-       travel(A,B,P,[B|P],L),
-       travel(A,B,Visited,Path,L),
-       minimal([F|R],M),
-       min([],M,M),
-       min([[P,L]|R],[_,M],Min),
-       min([_|R],M,Min),
-       shortest(Current ,Destination, Path, Length).
+       write(Length),
+       /*
+        * loop the menu to go back and
+        * exit the program when user inputs 'exit'
+        */
 
 
+       nl.
 
 
 /* ask current location */
@@ -126,8 +125,8 @@ min([_|R],M,Min) :- min(R,M,Min).
 
 
 
-guess(Destination) :- figureout(FruitVeg),
-         findout(Destination),
+guess(Grocery) :- figureout(FruitVeg),
+         findout(Grocery),
     /*
     retractall(current_room(_)),
     assertz(current_room(garden)),
@@ -135,11 +134,11 @@ guess(Destination) :- figureout(FruitVeg),
     get_input,
     */
 
-    write('The product you are looking for is: '),
+    write('The product you are looking for may be: '),
     write(FruitVeg),
     nl,
     write('That product can be found in: '),
-    write(Destination),
+    write(Grocery),
     %3 variables one for a and b (current loc-  destination)
     %that can be found in (variable)
     %put in function predicate shortest
