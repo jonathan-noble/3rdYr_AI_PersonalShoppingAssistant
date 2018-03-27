@@ -11,7 +11,7 @@ start :-
        nl,nl,nl,
        write('***********************************************'),
        nl,
-       format("Hello ~q! I will be your personal shopping assistant for today.",         Name),
+       format("Hello ~q! I will be your personal shopping assistant for today.", Name),
        nl,
        write('***********************************************'),
        nl,nl,nl,
@@ -24,14 +24,31 @@ shop :-
        write('Below are the list of areas in this grocery.'),
        nl,
        write('***********************************************'),
-       nl,nl,nl,
+       nl,nl,
+
+       write('----------------fruit_area-------------------'),
+       nl,nl,
+       write('----------------vegetable_area---------------'),
+       nl,nl,
+       write('----------------butcher_area-----------------'),
+       nl,nl,
+       write('----------------cosmetic_area----------------'),
+       nl,nl,
+       write('----------------pet_area---------------------'),
+       nl,nl,
+       write('----------------home_area--------------------'),
+       nl,nl,
+       write('----------------clothes_area-----------------'),
+       nl,nl,
+       write('----------------cleaning_area----------------'),
+
 
        %no need listing just type the names write
-       listing(area),
+      % listing(section),
        nl,
        write('***********************************************'),
        nl,
-       write('Which area are you at the moment?'),
+       write('Which section are you at the moment?'),
        nl,
        write('***********************************************'),
        nl,
@@ -52,9 +69,9 @@ shop :-
        nl,nl,
        write('***********************************************'),
        nl,
-       write('Need anything else? Type \'yes\' to shop more! '),
+       write('Need anything else? Type \'yes.\' to shop more! '),
        nl,
-       write('Otherwise, type \'no.\' to shut me off'),
+       write('Otherwise, type \'no.\' to shut me off.'),
        nl,
        write('***********************************************'),
        nl,
@@ -73,30 +90,22 @@ print_location(Current) :-
     read(Current),
     write('You are currently in: '),
     write(Current),
-    write(' section!').
-
-%facts
-area(fruities).
-area(veggies).
-area(butcher).
-area(cosmetic).
-area(pet).
-area(home).
-area(clothes).
-area(cleaning).
-area(sale).
+    write(' area!'),
 
 
-isconnectedto(fruities,veggies,1).
-isconnectedto(fruities,butcher,3.5).
-isconnectedto(veggies,cosmetic,2.5).
-isconnectedto(veggies,pet,1).
-isconnectedto(butcher,home,2.2).
-isconnectedto(cosmetic,home,1.5).
-isconnectedto(cosmetic,pet,4).
-isconnectedto(pet,clothes,2.5).
-isconnectedto(clothes,cleaning,2).
-isconnectedto(cleaning,sale,1).
+
+
+
+/* FACTS */
+isconnectedto(fruit_area,vegetable_area,1).
+isconnectedto(fruit_area,butcher_area,1).
+isconnectedto(vegetable_area,cosmetic_area,1).
+isconnectedto(vegetable_area,pet_area,1).
+isconnectedto(butcher_area,home_area,1).
+isconnectedto(cosmetic_area,home_area,1).
+isconnectedto(cosmetic_area,pet_area,1).
+isconnectedto(pet_area,clothes_area,1).
+isconnectedto(clothes_area,cleaning_area,1).
 
 
 %state search
@@ -143,22 +152,45 @@ guess(Destination) :- figureout(Grocery),
 
 
 /* Facts that will be tested */
-figureout(tomato)       :- tomato, !.
-figureout(broccoli)     :- broccoli, !.
-figureout(potato)       :- potato, !.
-figureout(avocado)      :- avocado, !.
-figureout(cauliflower)  :- cauliflower, !.
-figureout(cucumber)     :- cucumber, !.
-figureout(squash)       :- squash, !.
 
+%fruits
+figureout(apple)       :- apple, !.
+figureout(blueberries) :- blueberries, !.
+figureout(lemon)       :- lemon, !.
+
+%vegetables
+figureout(spinach)     :- spinach, !.
+figureout(broccoli)    :- broccoli, !.
+figureout(beets)       :- beets, !.
+
+%home products
+figureout(towel)       :-towel,!.
+figureout(blanket)     :-blanket,!.
+figureout(bread_knife) :-bread_knife,!.
+
+%cosmetic product
+figureout(lipstick)    :-lipstick,!.
+figureout(perfume)     :-perfume,!.
+figureout(shampoo)     :-shampoo,!.
+
+%clothing items
+figureout(trousers)    :-trousers,!.
+figureout(dress)       :-dress,!.
+figureout(sunglasses)  :-sunglasses,!.
+
+/* Facts meat */
 
 figureout(beef)         :- beef, !.
 figureout(crab)         :- crab, !.
 figureout(turkey)       :- turkey, !.
 
+/* Facts pet */
+
 figureout(toys)         :- toys, !.
 figureout(leash)        :- leash, !.
 figureout(treats)       :- treats, !.
+
+/* Facts cleaning */
 
 figureout(soap)         :- soap,  !.
 figureout(spray)        :- spray, !.
@@ -166,33 +198,111 @@ figureout(tools)        :- tools, !.
 
 figureout(unknown).             /* no diagnosis */
 
-/* Facts for the area the objects are located at */
-findout(fruities) :- fruities, !.
-findout(veggies)  :- veggies, !.
 
-findout(butcher)  :- butcher, !.
-findout(pet)      :- pet, !.
-findout(cleaning) :- cleaning, !.
+/* Facts for the area the objects are located at */
+findout(fruit_area)    :- fruit_area, !.
+findout(vegetable_area)   :- vegetable_area, !.
+findout(home_area)     :- home_area, !.
+findout(cosmetic_area) :- cosmetic_area,!.
+findout(clothes_area)  :- clothes_area,!.
+
+findout(butcher_area)  :- butcher_area, !.
+findout(pet_area)      :- pet_area, !.
+findout(cleaning_area) :- cleaning_area, !.
 
 
 
 /* object identification rules */
-tomato      :- fruit,
-             verify(is_red).
-broccoli    :- vegetable,
-             verify(is_bushy),
-             verify(is_green).
-potato      :- vegetable,
-             verify(is_yellow).
-avocado     :- fruit,
-             verify(is_green).
-cauliflower :- vegetable,
-             verify(is_yellow).
-cucumber    :- fruit,
-             verify(is_green).
-squash      :- fruit,
-             verify(is_orange).
+apple       :- fruit,
+             verify(medium_sized),
+             verify(hard_feel),
+             verify(can_be_green),
+             verify(can_be_red).
 
+blueberries :- fruit,
+             verify(small),
+             verify(firm_feel),
+             verify(color_green).
+
+lemon       :- fruit,
+             verify(medium_sized),
+             verify(firm_feel),
+             verify(color_yellow).
+
+%vegetables
+broccoli    :- vegetable,
+             verify(medium_sized),
+             verify(can_be_green),
+             verify(looks_like_little_trees).
+
+beets       :- vegetable,
+             verify(medium_sized),
+             verify(tough_textured),
+             verify(has_strong_pigment),
+             verify(can_be_bluish_red).
+
+spinach     :- vegetable,
+             verify(medium_sized),
+             verify(can_be_green),
+             verify(is_leafy),
+             verify(popeyes_favourite_food).
+%home products
+towel      :-home,
+           verify(can_be_large_sized),
+           verify(can_be_small_sized),
+           verify(is_soft),
+           verify(is_used_for_drying_body_or_surface).
+blanket    :-home,
+           verify(can_be_large_sized),
+           verify(can_be_small_sized),
+           verify(is_soft),
+           verify(used_for_keeping_body_warm).
+
+bread_knife:-home,
+           verify(can_be_medium_sized),
+           verify(used_for_slicing),
+           verify(is_sharp),
+           verify(has_serrated_edges).
+
+%cosmetic products
+
+lipstick :-cosmetic,
+          verify(can_be_small_sized),
+          verify(is_a_type_of_make_up),
+          verify(is_mainly_used_by_women),
+          verify(comes_in_different_colors),
+          verify(is_applied_on_the_lips).
+perfume :-cosmetic,
+          verify(can_be_used_by_all_genders),
+          verify(comes_in_a_liquid_form),
+          verify(gives_a_pleasant_scent_to_a_person).
+shampoo :-cosmetic,
+          verify(can_be_used_by_all_genders),
+          verify(comes_in_a_viscous_liquid),
+          verify(is_used_to_clean_hair).
+
+%clothing items
+trousers :-clothes,
+           verify(can_be_worn_by_men),
+           verify(can_be_worn_by_women),
+           verify(worn_from_waist_to_ankles),
+           verify(can_cover_both_legs_separately).
+
+dress :-clothes,
+        verify(can_be_worn_by_women),
+        verify(one_piece_garment),
+        verify(contains_skirt).
+
+sunglasses :- clothes,
+           verify(can_be_worn_by_men),
+           verify(can_be_worn_by_women),
+           verify(eyewear),
+           verify(protection_from_sun).
+
+
+
+
+/*meat products*/
 beef        :- meat,
                verify(is_put_on_burgers).
 crab        :- meat,
@@ -206,7 +316,7 @@ leash       :- pet,
                verify(is_for_walking).
 treats      :- pet,
                verify(is_for_snacks).
-
+/*cleaning products*/
 soap        :- cleaning,
                verify(is_for_handwash).
 spray       :- cleaning,
@@ -218,31 +328,63 @@ tools       :- cleaning,
 
 
 /* area identification rules */
-fruities  :- fruit.
-veggies   :- vegetable.
-
-butcher  :- meat.
-pet      :- petmalu.
-cleaning :- sanitary .
+butcher_area  :- meat.
+pet_area      :- pet.
+cleaning_area :- cleaning .
 
 
-/* classification rules */
+/* area identification rules */
+fruit_area    :- fruit.
+vegetable_area   :- vegetable.
+home_area     :- home.
+cosmetic_area :- cosmetic.
+clothes_area  :- clothes.
+
+/* classification rules for fruits */
 fruit      :- verify(tastes_sweet), !.
+fruit      :- verify(tastes_sour), !.
 fruit      :- verify(is_from_tree), !.
-fruit      :- verify(has_seed), !.
+fruit      :- verify(seed_bearing), !.
+
+/* classification rules for vegetable */
 
 vegetable  :- verify(is_from_ground), !.
-vegetable  :- verify(is_leafy), !.
+vegetable  :- verify(is_from_roots), !.
+vegetable  :- verify(is_from_stem), !.
 vegetable  :- verify(tastes_bland), !.
 
 
+/* classification rules for home products */
+home :- verify(is_normally_used_in_the_bathroom),!.
+home :- verify(is_normally_used_in_the_bedroom),!.
+home :- verify(is_normally_used_in_the_kitchen),!.
+
+
+/* classification rules for cosmetic products */
+
+cosmetic :- verify(is_applied_to_enhance_facial_appearance),!.
+cosmetic :- verify(is_applied_to_hair),!.
+cosmetic :- verify(is_applied_on_skin_or_clothes),!.
+
+
+/* classification rules for clothing products */
+clothes :-verify(worn_on_the_body).
+clothes :-verify(can_be_an_accessory).
+
+
+/*classification for meat products */
 meat       :- verify(is_chunky), !.
 meat       :- verify(has_bone), !.
 meat       :- verify(has_high_protein), !.
 
-petmalu    :- verify(is_used_by_pets), !.
 
-sanitary   :- verify(is_for_house), !.
+/*classification for pet products */
+pet        :- verify(is_used_by_pets), !.
+
+
+/*classification for cleaning products */
+
+cleaning   :- verify(is_used_for_cleaning_the_house), !.
 
 
 /* how to ask questions */
