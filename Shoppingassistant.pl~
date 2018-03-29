@@ -1,20 +1,54 @@
-%Start
+/*
+* Introduction to AI Project
+*
+* Student Name #1: Pia Nila Flor Ofalsa
+* Student No.  #1: 758000
+*
+* Student Name #2: Jonathan Noble
+* Student No.  #2: 757996
+*
+* Project Description:
+*
+* A simple expert sytem : Grocery Expert System
+*
+* A program that helps user identify a product they are searching for.
+* A program that provides the shortest path to reach the location of the
+* product being searched for.
+*
+*
+*/
+
+/*
+* The start function outputs Greeting message.
+* Ask the user for their name
+* Greet the user with the given name
+*
+* executes the identification of the product function (shop.)
+*
+*
+*/
+
 start :-
-       write('***********************************************'),
+       write('********************************************************'),
        nl,nl,
-       write('*********Welcome to AI Personal Shopping! **********'),
+       write('*********Welcome to AI Personal Shopping! **************'),
        nl,nl,nl,
-       write('***********************************************'),
+
+       write('********************************************************'),
        nl,
+
        write('Can I get your name please? '),
        read(Name),
        nl,nl,nl,
-       write('***********************************************'),
+
+       write('********************************************************'),
        nl,
        format("Hello ~q! I will be your personal shopping assistant for today.", Name),
        nl,
-       write('***********************************************'),
+       write('********************************************************'),
        nl,nl,nl,
+
+       /*calls the function to identify the product being searched for*/
        shop.
 
 
@@ -42,9 +76,6 @@ shop :-
        nl,nl,
        write('----------------cleaning_area----------------'),
 
-
-       %no need listing just type the names write
-      % listing(section),
        nl,
        write('***********************************************'),
        nl,
@@ -52,13 +83,31 @@ shop :-
        nl,
        write('***********************************************'),
        nl,
+
+       /*
+       *Current variable stores the current location
+       *of the user within the area of the grocery
+       *(see the list above for reference
+       */
+
        print_location(Current),
        nl, nl, nl,
 
+
+       /* The system guess the destination of the product being searched*/
        guess(Destination),
-       %once the product is figured out , it can then be located
+
+       %once the product is figured out ,it can then be located
        nl,
 
+       /*
+       *shortest provides the shortest route
+       *to reach the location of the product being searched for
+       *Current = stores the current location of user
+       *Destination = stores the location of the product being searched for.
+       *Path = provides a list of the area to travel to (route) to the product.
+       *Length = the distance traveled from current to destination
+         */
        shortest(Current, Destination, Path, Length),
        write('Here is the shortest path you can take: '),
        write(Path),
@@ -75,46 +124,59 @@ shop :-
        nl,
        write('***********************************************'),
        nl,
+
+
        read(Response),
        nl,
       ( (Response == yes ; Response == y )
+      %loops back the program
       -> shop ;
        ( Response == no ; Response == n)
+      %exits the program
       ->  exit),
       nl.
 
 exit :- write('Goodbye! See you again soon.').
 
-/* ask current location */
+
+
+/* ask current location of user */
 print_location(Current) :-
     read(Current),
     write('You are currently in: '),
-    write(Current),
-    write(' area!'),
-
+    write(Current).
 
 
 
 
 /* FACTS */
 isconnectedto(fruit_area,vegetable_area,1).
-isconnectedto(fruit_area,butcher_area,1).
-isconnectedto(vegetable_area,cosmetic_area,1).
-isconnectedto(vegetable_area,pet_area,1).
-isconnectedto(butcher_area,home_area,1).
-isconnectedto(cosmetic_area,home_area,1).
-isconnectedto(cosmetic_area,pet_area,1).
-isconnectedto(pet_area,clothes_area,1).
-isconnectedto(clothes_area,cleaning_area,1).
+isconnectedto(fruit_area,butcher_area,1.5).
+isconnectedto(vegetable_area,cosmetic_area,2).
+isconnectedto(vegetable_area,pet_area,2.5).
+isconnectedto(butcher_area,home_area,3.5).
+isconnectedto(cosmetic_area,home_area,4).
+isconnectedto(cosmetic_area,pet_area,5).
+isconnectedto(pet_area,clothes_area,5.5).
+isconnectedto(clothes_area,cleaning_area,6.5).
 
 
 %state search
+%to represent that edges are bi-directional
+%generates path between two nodes of the graph
 connected(X,Y,L) :- isconnectedto(X,Y,L) ; isconnectedto(Y,X,L).
 
+%a path is obtained if A and B are connected
 path(A,B,Path,Len) :-
        travel(A,B,[A],Q,Len),
        reverse(Q,Path).
 
+/*
+*A path from A to B is achieved provided that A is connected to a node C
+different from B that is not on the previously visited part of the path,
+and one continues finding a path from C to B". Avoiding repeated nodes
+ensures that the program will not cycle endlessly.
+*/
 travel(A,B,P,[B|P],L) :-
        connected(A,B,L).
 travel(A,B,Visited,Path,L) :-
@@ -387,7 +449,7 @@ pet        :- verify(is_used_by_pets), !.
 cleaning   :- verify(is_used_for_cleaning_the_house), !.
 
 
-/* how to ask questions */
+/*ask user questions what are they looking for */
 ask(Question) :-
 
     write('Are you looking for something that: '),
